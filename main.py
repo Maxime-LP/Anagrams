@@ -1,14 +1,25 @@
-from collections import Counter, defaultdict
 from time import time
-from job import job
 import multiprocessing as mp
+from job import job
+from preprocessing import preprocessing, dispatcher
 
 if __name__ == '__main__':   
     t0 = time()
-    nb_of_processes = mp.cpu_count() - 1
+
+    file_path = 'words'
+    nb_of_processes = 1
     queue = mp.Queue()
-    
-    tasks = [job(id_n,nb_of_processes,queue) for id_n in range(1,nb_of_processes+1)]
+    TotalWords, words_by_length = preprocessing(file_path)
+    min_length=2
+    intervals = dispatcher(min_length,nb_of_processes, TotalWords, words_by_length)
+    tasks = []
+
+    for id_n in range(1,nb_of_processes+1):
+        interval = intervals[id_n-1]
+        words = set()
+        for length in range(interval[0],interval[1]) :
+            words.update(words_by_length[length])
+        tasks.append(job(id_n,words,queue))
 
     for task in tasks:
         task.start()
