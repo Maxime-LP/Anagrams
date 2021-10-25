@@ -14,6 +14,7 @@ class job(mp.Process):
             letters = ''.join(sorted(word))
             self.dict[letters].add(word)
 
-        self.dict = {key: val for key, val in self.dict.items() if len(val) > 1}
+        self.dict = {key: val for key, val in self.dict.items()}
         self.queue.put(self.dict)
-        
+        print(self.id_n,'terminé') 
+        self.terminate()      

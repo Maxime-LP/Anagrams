@@ -7,9 +7,10 @@ if __name__ == '__main__':
     t0 = time()
 
     file_path = 'words'
-    nb_of_processes = 1
+    nb_of_processes = 2
     queue = mp.Queue()
-    TotalWords, words_by_length = preprocessing(file_path)
+    TotalWords, words_by_length = list(preprocessing(file_path))[0:100000]
+    TotalWords=100000
     min_length=2
     intervals = dispatcher(min_length,nb_of_processes, TotalWords, words_by_length)
     tasks = []
@@ -23,14 +24,16 @@ if __name__ == '__main__':
 
     for task in tasks:
         task.start()
+    print('1')
     for task in tasks:
         task.join()
-    
+    print(queue.empty())
     output_dict = {}
     while not queue.empty():
         local_dict = queue.get()
+        print(local_dict)
         output_dict.update(local_dict)
-
+    print('3')
     output = zip(output_dict.keys(),output_dict.values())
     with open('log.txt','w') as log:
         for group in output:
