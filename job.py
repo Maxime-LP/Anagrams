@@ -8,13 +8,13 @@ class job(mp.Process):
         self.words = words
         self.queue = queue
         self.dict = defaultdict(set)
+        self.running = False
 
     def run(self):
+        self.running = True
         for word in self.words:
             letters = ''.join(sorted(word))
             self.dict[letters].add(word)
 
-        self.dict = {key: val for key, val in self.dict.items()}
         self.queue.put(self.dict)
-        print(self.id_n,'terminé') 
-        self.terminate()      
+        self.running = False      
