@@ -41,10 +41,9 @@ if __name__ == '__main__':
         for group in output:
             count_groups[len(group)]+=1
             log.write(f"{','.join(group)} \n")
+        log.write(f"Temps d'exécution : {time()-t0}")
         
     for length,nb in sorted(count_groups.items(),key=lambda x:x[0]):
         print(f"{nb} ensembles de {length} anagrames")
     
-    with open('log.txt','w') as log:
-        log.write(f"Temps d'exécution : {time()-t0}")
     print(f"Temps d'exécution : {time()-t0}")
